@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace WebSProperty4U.Models
+namespace Webservice.Models
 {
     public class Rental
     {

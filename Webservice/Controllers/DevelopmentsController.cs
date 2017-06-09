@@ -1,52 +1,123 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WebSProperty4U;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Microsoft.EntityFrameworkCore;
+using Webservice.Models;
 
 namespace Webservice.Controllers
 {
-    [Route("api/[controller]")]
+    [Produces("application/json")]
+    [Route("api/Developments")]
     public class DevelopmentsController : Controller
     {
-        private DatabaseContext _ctx;
-        public DevelopmentsController(DatabaseContext ctx)
+        private readonly DatabaseContext _context;
+
+        public DevelopmentsController(DatabaseContext context)
         {
-            _ctx = ctx;
+            _context = context;
         }
-        // GET: api/values
+
+        // GET: api/Developments
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Developments> GetDevelopment()
         {
-            return new string[] { "value1", "value2" };
+            return _context.Development;
         }
 
-        // GET api/values/5
+        // GET: api/Developments/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> GetDevelopments([FromRoute] int id)
         {
-            return "value";
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var developments = await _context.Development.SingleOrDefaultAsync(m => m.Id == id);
+
+            if (developments == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(developments);
         }
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/values/5
+        // PUT: api/Developments/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public async Task<IActionResult> PutDevelopments([FromRoute] int id, [FromBody] Developments developments)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != developments.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(developments).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!DevelopmentsExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        // POST: api/Developments
+        [HttpPost]
+        public async Task<IActionResult> PostDevelopments([FromBody] Developments developments)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _context.Development.Add(developments);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetDevelopments", new { id = developments.Id }, developments);
+        }
+
+        // DELETE: api/Developments/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteDevelopments([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var developments = await _context.Development.SingleOrDefaultAsync(m => m.Id == id);
+            if (developments == null)
+            {
+                return NotFound();
+            }
+
+            _context.Development.Remove(developments);
+            await _context.SaveChangesAsync();
+
+            return Ok(developments);
+        }
+
+        private bool DevelopmentsExists(int id)
+        {
+            return _context.Development.Any(e => e.Id == id);
         }
     }
 }

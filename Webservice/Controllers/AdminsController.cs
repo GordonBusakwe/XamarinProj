@@ -8,60 +8,57 @@ using Webservice.Models;
 namespace Webservice.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Properties")]
-    public class PropertiesController : Controller
+    [Route("api/Admins")]
+    public class AdminsController : Controller
     {
         private readonly DatabaseContext _context;
 
-        public PropertiesController(DatabaseContext context)
+        public AdminsController(DatabaseContext context)
         {
             _context = context;
         }
 
-        // GET: api/Properties
+        // GET: api/Admins
         [HttpGet]
-        public IEnumerable<Properties> GetProperty()
+        public IEnumerable<Admin> GetAdmin()
         {
-            return _context.Property;
+            return _context.Admin;
         }
 
-        // GET: api/Properties/5
+        // GET: api/Admins/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProperties([FromRoute] int id)
+        public async Task<IActionResult> GetAdmin([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var properties = await _context.Property.SingleOrDefaultAsync(m => m.PropId == id);
+            var admin = await _context.Admin.SingleOrDefaultAsync(m => m.ID == id);
 
-            if (properties == null)
+            if (admin == null)
             {
                 return NotFound();
             }
 
-            return Ok(properties);
+            return Ok(admin);
         }
 
-        // PUT: api/Properties/5
+        // PUT: api/Admins/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProperties([FromRoute] int id, [FromBody] Properties properties)
+        public async Task<IActionResult> PutAdmin([FromRoute] int id, [FromBody] Admin admin)
         {
             if (!ModelState.IsValid)
             {
-
-
-
                 return BadRequest(ModelState);
             }
 
-            if (id != properties.PropId)
+            if (id != admin.ID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(properties).State = EntityState.Modified;
+            _context.Entry(admin).State = EntityState.Modified;
 
             try
             {
@@ -69,7 +66,7 @@ namespace Webservice.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PropertiesExists(id))
+                if (!AdminExists(id))
                 {
                     return NotFound();
                 }
@@ -82,45 +79,45 @@ namespace Webservice.Controllers
             return NoContent();
         }
 
-        // POST: api/Properties
+        // POST: api/Admins
         [HttpPost]
-        public async Task<IActionResult> PostProperties([FromBody] Properties properties)
+        public async Task<IActionResult> PostAdmin([FromBody] Admin admin)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Property.Add(properties);
+            _context.Admin.Add(admin);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProperties", new { id = properties.PropId }, properties);
+            return CreatedAtAction("GetAdmin", new { id = admin.ID }, admin);
         }
 
-        // DELETE: api/Properties/5
+        // DELETE: api/Admins/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProperties([FromRoute] int id)
+        public async Task<IActionResult> DeleteAdmin([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var properties = await _context.Property.SingleOrDefaultAsync(m => m.PropId == id);
-            if (properties == null)
+            var admin = await _context.Admin.SingleOrDefaultAsync(m => m.ID == id);
+            if (admin == null)
             {
                 return NotFound();
             }
 
-            _context.Property.Remove(properties);
+            _context.Admin.Remove(admin);
             await _context.SaveChangesAsync();
 
-            return Ok(properties);
+            return Ok(admin);
         }
 
-        private bool PropertiesExists(int id)
+        private bool AdminExists(int id)
         {
-            return _context.Property.Any(e => e.PropId == id);
+            return _context.Admin.Any(e => e.ID == id);
         }
     }
 }

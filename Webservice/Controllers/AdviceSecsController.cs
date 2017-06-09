@@ -8,60 +8,57 @@ using Webservice.Models;
 namespace Webservice.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Properties")]
-    public class PropertiesController : Controller
+    [Route("api/AdviceSecs")]
+    public class AdviceSecsController : Controller
     {
         private readonly DatabaseContext _context;
 
-        public PropertiesController(DatabaseContext context)
+        public AdviceSecsController(DatabaseContext context)
         {
             _context = context;
         }
 
-        // GET: api/Properties
+        // GET: api/AdviceSecs
         [HttpGet]
-        public IEnumerable<Properties> GetProperty()
+        public IEnumerable<AdviceSecs> GetAdvices()
         {
-            return _context.Property;
+            return _context.Advices;
         }
 
-        // GET: api/Properties/5
+        // GET: api/AdviceSecs/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProperties([FromRoute] int id)
+        public async Task<IActionResult> GetAdviceSecs([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var properties = await _context.Property.SingleOrDefaultAsync(m => m.PropId == id);
+            var adviceSecs = await _context.Advices.SingleOrDefaultAsync(m => m.AID == id);
 
-            if (properties == null)
+            if (adviceSecs == null)
             {
                 return NotFound();
             }
 
-            return Ok(properties);
+            return Ok(adviceSecs);
         }
 
-        // PUT: api/Properties/5
+        // PUT: api/AdviceSecs/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProperties([FromRoute] int id, [FromBody] Properties properties)
+        public async Task<IActionResult> PutAdviceSecs([FromRoute] int id, [FromBody] AdviceSecs adviceSecs)
         {
             if (!ModelState.IsValid)
             {
-
-
-
                 return BadRequest(ModelState);
             }
 
-            if (id != properties.PropId)
+            if (id != adviceSecs.AID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(properties).State = EntityState.Modified;
+            _context.Entry(adviceSecs).State = EntityState.Modified;
 
             try
             {
@@ -69,7 +66,7 @@ namespace Webservice.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PropertiesExists(id))
+                if (!AdviceSecsExists(id))
                 {
                     return NotFound();
                 }
@@ -82,45 +79,45 @@ namespace Webservice.Controllers
             return NoContent();
         }
 
-        // POST: api/Properties
+        // POST: api/AdviceSecs
         [HttpPost]
-        public async Task<IActionResult> PostProperties([FromBody] Properties properties)
+        public async Task<IActionResult> PostAdviceSecs([FromBody] AdviceSecs adviceSecs)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Property.Add(properties);
+            _context.Advices.Add(adviceSecs);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProperties", new { id = properties.PropId }, properties);
+            return CreatedAtAction("GetAdviceSecs", new { id = adviceSecs.AID }, adviceSecs);
         }
 
-        // DELETE: api/Properties/5
+        // DELETE: api/AdviceSecs/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProperties([FromRoute] int id)
+        public async Task<IActionResult> DeleteAdviceSecs([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var properties = await _context.Property.SingleOrDefaultAsync(m => m.PropId == id);
-            if (properties == null)
+            var adviceSecs = await _context.Advices.SingleOrDefaultAsync(m => m.AID == id);
+            if (adviceSecs == null)
             {
                 return NotFound();
             }
 
-            _context.Property.Remove(properties);
+            _context.Advices.Remove(adviceSecs);
             await _context.SaveChangesAsync();
 
-            return Ok(properties);
+            return Ok(adviceSecs);
         }
 
-        private bool PropertiesExists(int id)
+        private bool AdviceSecsExists(int id)
         {
-            return _context.Property.Any(e => e.PropId == id);
+            return _context.Advices.Any(e => e.AID == id);
         }
     }
 }

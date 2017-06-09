@@ -1,8 +1,8 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using WebSProperty4U.Models;
+using Webservice.Models;
 
-namespace WebSProperty4U
+namespace Webservice
 {
     public class DatabaseContext:DbContext 
     {

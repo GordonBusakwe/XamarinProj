@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebSProperty4U.Models
+namespace Webservice.Models
 {
     public class User
     {

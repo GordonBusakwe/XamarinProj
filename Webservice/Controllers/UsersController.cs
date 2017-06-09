@@ -1,67 +1,67 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Webservice;
 using Webservice.Models;
 
 namespace Webservice.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Properties")]
-    public class PropertiesController : Controller
+    [Route("api/Users")]
+    public class UsersController : Controller
     {
         private readonly DatabaseContext _context;
 
-        public PropertiesController(DatabaseContext context)
+        public UsersController(DatabaseContext context)
         {
             _context = context;
         }
 
-        // GET: api/Properties
+        // GET: api/Users
         [HttpGet]
-        public IEnumerable<Properties> GetProperty()
+        public IEnumerable<User> GetUsers()
         {
-            return _context.Property;
+            return _context.Users;
         }
 
-        // GET: api/Properties/5
+        // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProperties([FromRoute] int id)
+        public async Task<IActionResult> GetUser([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var properties = await _context.Property.SingleOrDefaultAsync(m => m.PropId == id);
+            var user = await _context.Users.SingleOrDefaultAsync(m => m.Id == id);
 
-            if (properties == null)
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return Ok(properties);
+            return Ok(user);
         }
 
-        // PUT: api/Properties/5
+        // PUT: api/Users/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProperties([FromRoute] int id, [FromBody] Properties properties)
+        public async Task<IActionResult> PutUser([FromRoute] int id, [FromBody] User user)
         {
             if (!ModelState.IsValid)
             {
-
-
-
                 return BadRequest(ModelState);
             }
 
-            if (id != properties.PropId)
+            if (id != user.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(properties).State = EntityState.Modified;
+            _context.Entry(user).State = EntityState.Modified;
 
             try
             {
@@ -69,7 +69,7 @@ namespace Webservice.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PropertiesExists(id))
+                if (!UserExists(id))
                 {
                     return NotFound();
                 }
@@ -82,45 +82,45 @@ namespace Webservice.Controllers
             return NoContent();
         }
 
-        // POST: api/Properties
+        // POST: api/Users
         [HttpPost]
-        public async Task<IActionResult> PostProperties([FromBody] Properties properties)
+        public async Task<IActionResult> PostUser([FromBody] User user)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Property.Add(properties);
+            _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProperties", new { id = properties.PropId }, properties);
+            return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
-        // DELETE: api/Properties/5
+        // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProperties([FromRoute] int id)
+        public async Task<IActionResult> DeleteUser([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var properties = await _context.Property.SingleOrDefaultAsync(m => m.PropId == id);
-            if (properties == null)
+            var user = await _context.Users.SingleOrDefaultAsync(m => m.Id == id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            _context.Property.Remove(properties);
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
-            return Ok(properties);
+            return Ok(user);
         }
 
-        private bool PropertiesExists(int id)
+        private bool UserExists(int id)
         {
-            return _context.Property.Any(e => e.PropId == id);
+            return _context.Users.Any(e => e.Id == id);
         }
     }
 }

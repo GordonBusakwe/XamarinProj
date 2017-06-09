@@ -5,7 +5,7 @@ using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WebSProperty4U.Models
+namespace Webservice.Models
 {
     public class Properties
     { 
